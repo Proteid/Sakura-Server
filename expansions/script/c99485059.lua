@@ -1,7 +1,7 @@
 --タニア
 Duel.LoadScript("c62015410.lua")
-local cm,m=GetID()
-function cm.initial_effect(c)
+local s,id,o=GetID()
+function s.initial_effect(c)
 	--xyz summon
 	aux.AddXyzProcedure(c,nil,5,2,nil,nil,99)
     --base atk/def
@@ -10,12 +10,12 @@ function cm.initial_effect(c)
 	e1:SetProperty(EFFECT_FLAG_SINGLE_RANGE)
 	e1:SetCode(EFFECT_SET_BASE_ATTACK)
 	e1:SetRange(LOCATION_MZONE)
-	e1:SetValue(cm.atkval)
+	e1:SetValue(s.atkval)
 	c:RegisterEffect(e1)
 	local e2=e1:Clone()
 	e2:SetCode(EFFECT_SET_BASE_DEFENSE)
 	c:RegisterEffect(e2)
 end
-function cm.atkval(e,c)
+function s.atkval(e,c)
 	return c:GetOverlayCount()^c:GetOverlayCount()
 end

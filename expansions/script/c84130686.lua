@@ -1,7 +1,7 @@
 --連合軍
 Duel.LoadScript("c62015410.lua")
-local cm,m=GetID()
-function cm.initial_effect(c)
+local s,id,o=GetID()
+function s.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
 	--atk up
@@ -9,14 +9,14 @@ function cm.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
 	e1:SetCode(EFFECT_EXTRA_TOMAIN_KOISHI)
 	e1:SetRange(LOCATION_PZONE)
-	e1:SetTarget(cm.val)
+	e1:SetTarget(s.val)
 	e1:SetTargetRange(LOCATION_EXTRA,0)
 	c:RegisterEffect(e1)
 	--change effect type
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_FIELD)
 	e2:SetProperty(EFFECT_FLAG_PLAYER_TARGET)
-	e2:SetCode(m)
+	e2:SetCode(id)
 	e2:SetRange(LOCATION_PZONE)
 	e2:SetTargetRange(1,0)
 	c:RegisterEffect(e2)
@@ -26,28 +26,28 @@ function cm.initial_effect(c)
 	e3:SetCode(EFFECT_SPSUMMON_PROC_G)
 	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e3:SetRange(LOCATION_PZONE)
-	e3:SetCondition(cm.PendConditionExtratoMain())
-	e3:SetOperation(cm.PendOperationExtratoMain())
+	e3:SetCondition(s.PendConditionExtratoMain())
+	e3:SetOperation(s.PendOperationExtratoMain())
 	e3:SetValue(SUMMON_TYPE_PENDULUM)
 	local e4=Effect.CreateEffect(c)
 	e4:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_GRANT)
 	e4:SetRange(LOCATION_PZONE)
 	e4:SetTargetRange(LOCATION_SZONE,0)
-	e4:SetTarget(cm.eftg)
+	e4:SetTarget(s.eftg)
 	e4:SetLabelObject(e3)
 	c:RegisterEffect(e4)
 end
-function cm.eftg(e,c)
+function s.eftg(e,c)
 	local seq=c:GetSequence()
 	return c:IsLocation(LOCATION_PZONE)
 end
-function cm.filter(c)
+function s.filter(c)
 	return c:IsFaceup() and c:IsRace(RACE_WARRIOR+RACE_SPELLCASTER)
 end
-function cm.val(e,c,sump,sumtype,sumpos,targetp,se)
+function s.val(e,c,sump,sumtype,sumpos,targetp,se)
 	return  c:IsSetCard(0xfff) and c:IsType(TYPE_PENDULUM) and bit.band(c:GetSummonType(),SUMMON_TYPE_PENDULUM)>0
 end
-function cm.PendConditionExtratoMain()
+function s.PendConditionExtratoMain()
 	return  function(e,c,og)
 				if c==nil then return true end
 				local tp=c:GetControler()
@@ -81,14 +81,14 @@ function cm.PendConditionExtratoMain()
 				return Duel.GetLocationCount(tp,LOCATION_MZONE)>0 and g:IsExists(Auxiliary.PConditionFilter,1,nil,e,tp,lscale,rscale,eset)
 			end
 end
-function cm.PendOperationCheckExtratoMain(ft1,ft2,ft)
+function s.PendOperationCheckExtratoMain(ft1,ft2,ft)
 	return  function(g)
 				local exg=g:Filter(Card.IsLocation,nil,LOCATION_EXTRA)
 				local mg=g-exg
-				return #g<=ft and ((#exg<=ft2 and #mg<=ft1) or Duel.IsPlayerAffectedByEffect(tp,m))
+				return #g<=ft and ((#exg<=ft2 and #mg<=ft1) or Duel.IsPlayerAffectedByEffect(tp,id))
 			end
 end
-function cm.PendOperationExtratoMain()
+function s.PendOperationExtratoMain()
 	return  function(e,tp,eg,ep,ev,re,r,rp,c,sg,og)
 				local rpz=Duel.GetFieldCard(tp,LOCATION_PZONE,1)
 				local lscale=c:GetLeftScale()
@@ -108,7 +108,7 @@ function cm.PendOperationExtratoMain()
 					ft=1
 				end
 				if ft1>0 then loc=loc|LOCATION_HAND end
-				if ft2>0 or Duel.IsPlayerAffectedByEffect(tp,m) then loc=loc|LOCATION_EXTRA end
+				if ft2>0 or Duel.IsPlayerAffectedByEffect(tp,id) then loc=loc|LOCATION_EXTRA end
 				if og then
 					tg=og:Filter(Card.IsLocation,nil,loc):Filter(Auxiliary.PConditionFilter,nil,e,tp,lscale,rscale,eset)
 				else
@@ -138,7 +138,7 @@ function cm.PendOperationExtratoMain()
 					tg=tg:Filter(Auxiliary.PConditionExtraFilterSpecific,nil,e,tp,lscale,rscale,ce)
 				end
 				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-				Auxiliary.GCheckAdditional=cm.PendOperationCheckExtratoMain(ft1,ft2,ft)
+				Auxiliary.GCheckAdditional=s.PendOperationCheckExtratoMain(ft1,ft2,ft)
 				local g=tg:SelectSubGroup(tp,Auxiliary.TRUE,true,1,math.min(#tg,ft))
 				Auxiliary.GCheckAdditional=nil
 				if not g then return end

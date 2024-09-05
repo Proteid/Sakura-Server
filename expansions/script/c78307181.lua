@@ -1,7 +1,7 @@
 --青い花飾りの少女
 Duel.LoadScript("c62015410.lua")
-local cm,m=GetID()
-function cm.initial_effect(c)
+local s,id,o=GetID()
+function s.initial_effect(c)
 	--pendulum summon
 	aux.EnablePendulumAttribute(c)
     --special summon
@@ -10,11 +10,11 @@ function cm.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetCode(EVENT_DESTROYED)
 	e1:SetRange(LOCATION_PZONE)
-	e1:SetCountLimit(1,m)
-	e1:SetOperation(cm.operation)
+	e1:SetCountLimit(1,id)
+	e1:SetOperation(s.operation)
 	c:RegisterEffect(e1)
 end
-function cm.operation(e,tp,eg,ep,ev,re,r,rp)
+function s.operation(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)==0 then return end
 	Duel.Hint(HINT_SELECTMSG,1-tp,HINTMSG_CARDTYPE)
 	local op=Duel.AnnounceType(1-tp)
